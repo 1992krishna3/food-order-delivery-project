@@ -80,6 +80,7 @@ export const updateFoodItem = async (req, res) => {
 
     try {
         let foodItem = await Food.findById(req.params.id);
+
         if (!foodItem) {
             return res.status(404).json({ msg: 'Food item not found' });
         }
@@ -90,23 +91,26 @@ export const updateFoodItem = async (req, res) => {
             { new: true }
         );
 
-        res.json(foodItem);
+        res.json({
+            msg: 'Food item updated successfully',
+            food: foodItem
+        });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 };
-
 // Delete a food item
 export const deleteFoodItem = async (req, res) => {
     try {
         let foodItem = await Food.findById(req.params.id);
+        console.log(foodItem);
         if (!foodItem) {
             return res.status(404).json({ msg: 'Food item not found' });
         }
 
-        await Food.findByIdAndRemove(req.params.id);
-        res.json({ msg: 'Food item removed' });
+        await Food.findByIdAndDelete(req.params.id);
+        res.json({ msg: 'Food item removed successfully' });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');

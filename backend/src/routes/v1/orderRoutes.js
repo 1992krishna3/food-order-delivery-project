@@ -7,8 +7,8 @@ const userRouter = express.Router();
 // @route   POST api/orders
 // @desc    Create an order
 // @access  Private
-userRouter.post('/',auth, createOrder);
-userRouter.get('/',auth, getOrders);
-userRouter.get('/:id',auth, getOrderById);
+userRouter.post('/', createOrder);
+userRouter.get('/', getOrders);
+userRouter.get('/:id', getOrderById);
 
 export default userRouter;

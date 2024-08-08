@@ -12,7 +12,7 @@ const foodRouter = express.Router();
 foodRouter.post('/add',upload.single('image'), addFood);
 foodRouter.get('/', getFoodItems);
 foodRouter.get('/:id', getFoodItemById);
-foodRouter.put('/:id', auth, updateFoodItem);
-foodRouter.delete('/:id',auth, deleteFoodItem );
+foodRouter.put('/:id',  updateFoodItem);
+foodRouter.delete('/:id', deleteFoodItem );
 
 export default foodRouter;
