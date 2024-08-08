@@ -1,6 +1,5 @@
 import express from "express";
 import {  addFood,getFoodItems,getFoodItemById,updateFoodItem,deleteFoodItem, } from "../../controllers/foodController.js";
-import auth from "../../middleware/authMiddleware.js";
 import {upload} from "../../middleware/uploadMiddleware.js";
 
 
