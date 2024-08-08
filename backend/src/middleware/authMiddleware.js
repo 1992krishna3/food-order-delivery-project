@@ -3,9 +3,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const authMiddleware = async (req, res, next) => {
+  const authMiddleware = async (req, res, next) => {
   //Get token from header
-  const token = req.header('Authorization');
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+
   
   //Check if no token
   if (!token) {

@@ -13,13 +13,10 @@ const FoodSchema = new mongoose.Schema({
         type: Number, 
         required: true ,
     },
-    category: { 
-        type: String, 
-        required: true ,
-    },
-    restaurant: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Restaurant', required: true 
+    imageUrl: {
+        type: String,
+        required: true,
+
     },
 });
 

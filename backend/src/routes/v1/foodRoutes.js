@@ -1,13 +1,18 @@
 import express from "express";
-import { createFoodItem, getFoodItems,getFoodItemById,updateFoodItem,deleteFoodItem } from "../../controllers/foodController.js";
+import {  addFood,getFoodItems,getFoodItemById,updateFoodItem,deleteFoodItem, } from "../../controllers/foodController.js";
 import auth from "../../middleware/authMiddleware.js";
+import {upload} from "../../middleware/uploadMiddleware.js";
 
-const userRouter = express.Router();
 
-userRouter.post('/', auth, createFoodItem);
-userRouter.get('/', getFoodItems);
-userRouter.get('/:id', getFoodItemById);
-userRouter.put('/:id', auth, updateFoodItem);
-userRouter.delete('/:id',auth, deleteFoodItem );
 
-export default userRouter;
+const foodRouter = express.Router();
+
+// Route to add a new food item
+
+foodRouter.post('/add',upload.single('image'), addFood);
+foodRouter.get('/', getFoodItems);
+foodRouter.get('/:id', getFoodItemById);
+foodRouter.put('/:id', auth, updateFoodItem);
+foodRouter.delete('/:id',auth, deleteFoodItem );
+
+export default foodRouter;

@@ -6,7 +6,7 @@ import dbConnect from "./config/dbConfig.js";
 import orderRouter from "./routes/v1/orderRoutes.js";
 import userRouter from "./routes/v1/userRoutes.js";
 import foodRoutes from "./routes/v1/foodRoutes.js"
-import RestaurantRoutes from "./models/restaurantModel.js";
+import RestaurantRoutes from "./routes/v1/restaurantRoutes.js";
 
 
 
@@ -16,6 +16,8 @@ const app = express();
 
 //Middleware to parse json bodies
 app.use(express.json());
+
+
 
 // CORS configuration
 const corsOptions = {
@@ -29,9 +31,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 //Define Routes
-app.use('/api/user', userRouter);
+app.use('/api/v1/users', userRouter);
 app.use('/api/orders', orderRouter);
-app.use('/api/foods', foodRoutes);
+app.use('/api/v1/foods', foodRoutes);
 app.use('/api/restaurants', RestaurantRoutes);
 
 

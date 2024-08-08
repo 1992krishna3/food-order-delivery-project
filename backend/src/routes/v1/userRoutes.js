@@ -1,6 +1,7 @@
 import express from "express";
 import {signup, signin, getUserProfile} from "../../controllers/userControllers.js";
-import userRouter from "./orderRoutes.js";
+
+const userRouter = express.Router();
 
 
 

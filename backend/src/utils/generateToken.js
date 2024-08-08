@@ -5,4 +5,5 @@ function generateToken(username) {
     return jwt.sign({id:username}, serverConfig.token, { expiresIn: '1d' });
   };
 
+
   export default generateToken;

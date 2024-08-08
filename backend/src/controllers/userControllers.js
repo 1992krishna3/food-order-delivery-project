@@ -3,6 +3,7 @@ import generateToken from "../utils/generateToken.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+
 // Function to create an order
 export const createOrder = async (req, res) => {
   try {
@@ -49,7 +50,7 @@ export const signup = async (req, res) => {
     }
 
       const userExist = await User.findOne({ email });
-      
+      console.log(userExist);
       
       if (userExist) {
         return res.status(400).json({message:"User is already exist"});
