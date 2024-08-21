@@ -17,18 +17,12 @@ const app = express();
 //Middleware to parse json bodies
 app.use(express.json());
 
-
-
-// CORS configuration
-const corsOptions = {
-  origin: 'http://example.com', // Update this to your frontend's domain
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
-  credentials: true,
-};
-
-// Enable cors with options
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+app.use(cors());
 
 //Define Routes
 app.use('/api/v1/users', userRouter);

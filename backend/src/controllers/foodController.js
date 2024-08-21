@@ -5,7 +5,7 @@ import cloudinaryInstance from "../config/cloudinaryConfig.js";
 //Add food item
 export const addFood = async (req, res) => {
     try {
-      console.log("hitted");
+      console.log(req.file.path,"hitted");
       if(!req.file){
         return res.send("file is not visible")
       }
