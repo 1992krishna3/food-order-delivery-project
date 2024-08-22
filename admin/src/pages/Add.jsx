@@ -28,7 +28,7 @@ const Add = () => {
         formData.append("image",image)
 
         try {
-         const response = await axios.post(`${url}/api/food/add`, formData, {
+         const response = await axios.post(`${url}/api/foods/add/api/food/add`, formData, {
            headers: {
               'Content-Type': 'multipart/form-data',
            },
