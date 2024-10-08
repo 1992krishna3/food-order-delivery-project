@@ -18,6 +18,7 @@ const FoodSchema = new mongoose.Schema({
         required: true,
 
     },
+    
 });
 
 const Food = mongoose.model('Food', FoodSchema);

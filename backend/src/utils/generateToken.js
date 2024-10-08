@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken"
-import serverConfig from "../config/serverConfig.js";
+import dotenv from "dotenv"
 
-function generateToken(username) {
-    return jwt.sign({id:username}, serverConfig.token, { expiresIn: '1d' });
-  };
+dotenv.config()
 
+const generateToken = (userId,role) => {
+  
+  return jwt.sign({id:userId,role}, process.env.TOKEN_SECRET, { expiresIn: '1d' });
+};
 
   export default generateToken;

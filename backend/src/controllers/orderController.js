@@ -1,16 +1,18 @@
 import Order from "../models/orderModel.js";
+import Razorpay from "razorpay";
 
 
 //Create a new order
-exports.createOrder = async (req, res) => {
+export const createOrder = async (req, res) => {
     const { restaurant, items, total } = req.body;
     try {
         const newOrder = new Order({
-            user: req.user.id,
-            restaurant,
-            items,
-            total,
+            userId: req.body.userId,
+            items:req.body.items,
+            amount:req.body.amount,
+            address:req.body.address
        });
+    
 
        const order = await newOrder.save();
     res.json(order);
@@ -20,7 +22,7 @@ exports.createOrder = async (req, res) => {
 };
 
 //Get all orders
-exports.getOrders= async (req, res) => {
+export const getOrders= async (req, res) => {
     try {
         const orders =await Order.find({ user: req.user.id }).populate('items.food');
         res.json(orders);  
@@ -31,7 +33,7 @@ exports.getOrders= async (req, res) => {
 };
 
 //Get an order by ID
-exports.getOrderById = async (req, res) => {
+export const getOrderById = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
     if (!order) {
@@ -43,3 +45,10 @@ exports.getOrderById = async (req, res) => {
        res.status(500).send('Server error');
     }
 };
+
+const orderController = {
+    createOrder,
+    getOrders,
+    getOrderById
+};
+export default orderController; 

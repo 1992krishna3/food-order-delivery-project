@@ -4,9 +4,9 @@ import './index.css';
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Cart from "./pages/Cart/Cart";
-import PlaceOrder from "./pages/PlaceOrder/PlaceOrde";
+import PlaceOrder from "./pages/PlaceOrder/PlaceOrder.jsx";
 import Footer from "./components/Footer";
-import LoginPopup from "./components/LoginPopup";
+import LoginPopup from "./components/LoginPopup.jsx";
 
 const App = () => {
 

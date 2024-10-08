@@ -8,8 +8,8 @@ const foodRouter = express.Router();
 
 // Route to add a new food item
 
-foodRouter.post('/api/food/add',upload.single('image'), addFood);
-foodRouter.get('/', getFoodItems);
+foodRouter.post('/add',upload.single('image'), addFood);
+foodRouter.get('/list', getFoodItems);
 foodRouter.get('/:id', getFoodItemById);
 foodRouter.put('/:id',  updateFoodItem);
 foodRouter.delete('/:id', deleteFoodItem );

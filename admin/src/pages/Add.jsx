@@ -2,8 +2,8 @@ import React, {  useState } from 'react'
 import upload_area from '../assets/upload_area.png'
 import axios from 'axios'
 
-const Add = () => {
-    const url = "http://localhost:3000";
+const Add = ({url}) => {
+    
     const [image,setImage] = useState(false);
     const [data,setData] = useState({
         name:"",
@@ -27,29 +27,23 @@ const Add = () => {
         formData.append("category",data.category)
         formData.append("image",image)
 
-        try {
-         const response = await axios.post(`${url}/api/foods/add/api/food/add`, formData, {
-           headers: {
-              'Content-Type': 'multipart/form-data',
-           },
-        });
-        if (response.data.success) {
+        
+         const response = await axios.post(`${url}/api/v1/foods/add`, formData);
+           if (response.data.success) {
             setData({
                 name:"",
                 description:"",
                 price:"",
                 category:"salad"
             })
-            setImage(null);
-            alert('Food item added successfully!');
-        }
-        else {
-            console.error('Failed to add the food item:', response.data);
+            setImage(false)
             }
-        }catch (error) {
-            console.error('Error occurred while adding the food item:', error);
-        }
-    }
+            else{
+                
+            }
+        
+    }    
+    
   return (
     <div className='add'>
         <form className='flex-col' onSubmit={onsubmitHandler}>
@@ -78,13 +72,13 @@ const Add = () => {
                     <option value="Sandwich">Sandwich</option> 
                     <option value="Cake">Cake</option> 
                     <option value="Pure Veg">Pure Veg</option> 
-                    <option value="pasta"></option> 
-                    <option value="Noodles"></option> 
+                    <option value="Pasta">Pasta</option> 
+                    <option value="Noodles">Noodles</option> 
                     </select>
                 </div>
                  <div className="add-price flex-col">
                     <p>Product price</p>
-                    <input onChange={onChangeHandler} value={data.price} type="Number" name='price' placeholder='$20'/>
+                    <input onChange={onChangeHandler} value={data.price} type="Number" name='price' placeholder='$20' required/>
                  </div>
             </div>
             <button type='submit' className='add-btn'>ADD</button>
