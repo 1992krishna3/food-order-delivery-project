@@ -1,13 +1,24 @@
-import React, { useContext,useEffect  } from 'react';
+import React, { useContext  } from 'react';
 import { StoreContext } from '../../context/StoreContext.jsx';
 import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
- 
 
-const PlaceOrder = () => {
+const PlaceOrder = ()  => {
+  
+
+  const navigate = useNavigate(); 
 
   const {getTotalCartAmount,token,food_list,cartItems,url} = useContext(StoreContext)
   
+  console.log('Token:', token); // Check token availability
+
+  if (!token) {
+    alert('You need to log in first.');
+    return;
+  }
+
   const [data,setData] = useState({
     firstName:"",
     lastName:"",
@@ -26,25 +37,46 @@ const PlaceOrder = () => {
     setData(data=>({...data,[name]:value}))
   }
 
-  useEffect(()=>{
-    console.log(data);
-  },[data])
-  
-
-  const PlaceOrder = async (event) => {
+  const placeOrder = async (event) => {
     event.preventDefault();
     let orderItems = [];
     food_list.map((item)=>{
       if (cartItems[item._id]>0) {
         let itemInfo = item;
-        itemInfo["quantity"] = cartItems[item._id]
-        orderItems.push(itemInfo)
+        itemInfo["quantity"] = cartItems[item._id];
+        orderItems.push(itemInfo);
+      }
+    })
+  
+    let orderData = {
+      address:data,
+      items:orderItems,
+      amount:getTotalCartAmount()+2,
+      paymentInfo: {
+        paymentStatus: "pending", // Adjust according to your logic
+        paymentMethod: "online",  
+    }
+}; 
+// You can send orderData to your backend here
+    console.log('Authorization Token:', token);
+    try{
+      const response = await (`${url}/api/orders/create`, orderData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
       }
     })
     
+    alert('Order placed successfully!');
+     // Redirect to payment page with necessary order details
+     navigate('/payment') 
+  } catch (error) {
     
+  
+  }
+}
     return (
-    <form  onSubmit={PlaceOrder}className='place-order p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-8"'>
+    <form onSubmit={placeOrder} className='place-order p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-8"'>
       <div className="place-order-left space-y-4">
         <p className="title text-2xl font-bold mb-4">Delivery Information</p>
         <div className="multi-fields grid grid-cols-2 gap-4">
@@ -90,6 +122,6 @@ const PlaceOrder = () => {
       
     
   )
+  
 }
-}
-export default PlaceOrder;
+   export default PlaceOrder;

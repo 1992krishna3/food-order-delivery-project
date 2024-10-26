@@ -8,6 +8,14 @@ const Cart = () => {
   const {cartItems,food_list,removeFromCart,getTotalCartAmount,url} = useContext(StoreContext); 
 
   const navigate = useNavigate();
+  
+  
+  const handleCheckout = () => {
+    navigate('/place-order'); // Navigate to PlaceOrder page
+  };
+
+  console.log("Cart Items:", cartItems);
+  console.log("Food List:", food_list);
 
   return (
     <div className='cart p-6 max-w-4xl mx-auto'>
@@ -23,8 +31,10 @@ const Cart = () => {
         </div>
         <br/>
         <hr/>
-        {food_list.map((item,index)=>{
-          if(cartItems[item._id]>0){
+        
+        {food_list.map((item)=>{
+          const quantity = cartItems[item._id];
+          if (quantity > 0) {
             return (
               
               <div key={item._id} className="grid grid-cols-6 items-center gap-4 py-4 border-b border-gray-300">
@@ -35,12 +45,13 @@ const Cart = () => {
                 <p className="text-gray-800">${item.price*cartItems[item._id]}</p>
                 
                 <p onClick={()=>removeFromCart(item._id)} className="text-red-500 font-bold cursor-pointer hover:text-red-700"> x</p>
-        
+      
         
         <hr/>
         </div>
             )
           }
+      return null;
         })}
       </div>
       <div className="cart-bottom mt-6">

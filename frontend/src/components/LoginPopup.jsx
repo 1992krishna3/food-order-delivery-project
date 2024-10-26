@@ -13,7 +13,9 @@ const LoginPopup = ({setShowLogin}) => {
       firstName:"",
       lastName:"",
       email:"",
-      password:""
+      password:"",
+      confirmPassword:""
+      
     });
     
     
@@ -28,8 +30,15 @@ const LoginPopup = ({setShowLogin}) => {
   
     const onLogin = async (event) => {
       event.preventDefault();
-      let newUrl = `${url}/api/v1/users/${currState === "Login" ? 'signin' : 'signup'}`;
-    
+
+      console.log("Data sent:", data);  // Debugging log
+
+     
+
+  let newUrl = `${url}/api/v1/users/${
+    currState === "Login" ? 'signin' : 'signup'}`;
+  
+
     try {
       const response = await axios.post(newUrl,data, {
         headers: {
@@ -37,14 +46,13 @@ const LoginPopup = ({setShowLogin}) => {
         },
       });
     
-  
-      if (response.status === 201){
-       setToken(response.data.token);
-       localStorage.setItem("token",response.data.token);
-       setShowLogin(false)
-      }
-      else{
-        alert(response.data.message)
+    
+      if (response.status === 201 || response.status === 200){
+        const token = response.data.token;
+        setToken(token);
+        localStorage.setItem("token",token);
+        setShowLogin(false)
+       
       }
     }  catch (error) {
       console.error('Error:', error.response ? error.response.data.message : error.message);
@@ -63,6 +71,7 @@ const LoginPopup = ({setShowLogin}) => {
       <div className="space-y-2">
         {currState==="Sign up" && (<> <input name='firstName'onChange={onChangeHandler} value={data.firstName} type="text" placeholder='First Name' required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
         <input name='lastName'onChange={onChangeHandler} value={data.lastName} type='text' placeholder='Last Name' required  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/></> )}
+        <input name='confirmPassword' onChange={onChangeHandler} value={data.confirmPassword} type="password" placeholder='confirm Password' required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/> 
         <input name='email' onChange={onChangeHandler} value={data.email} type="email" placeholder='Your email' required className="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
         <input name='password' onChange={onChangeHandler} value={data.password} type="password" placeholder='Password' required className="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
       </div>
