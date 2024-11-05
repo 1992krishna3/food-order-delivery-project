@@ -1,16 +1,16 @@
 import React, { useContext } from 'react'
-import { assets } from '../assets/assets'
+import { assets } from '../assets/assets';
 import { StoreContext } from '../context/StoreContext'
 
 const FoodItem = ({ id,name,price,description,image }) => {
+     const {cartItems,addToCart,removeFromCart,} = useContext(StoreContext);
 
-   
-    const {cartItems,addToCart,removeFromCart,url} = useContext(StoreContext);
+
 
   return (
     <div className='bg-white border rounded-lg overflow-hidden shadow-lg'>
        <div className='relative'>
-         <img className='w-full h-full object-cover' src={url+"/images/"+image} alt={name}/>
+         <img className='w-full h-full object-cover' src={image} alt={name}/>
          {!cartItems[id]
              ?<img className='absolute top-2 right-2 w-8 h-8 cursor-pointer' onClick={()=>addToCart(id)} src={assets.add_icon_white} alt=""/>
              :<div className='absolute top-2 right-2 bg-white border border-gray-300 rounded-lg flex items-center p-2 space-x-2'>

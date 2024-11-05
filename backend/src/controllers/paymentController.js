@@ -36,11 +36,15 @@ export const createOrder = async (req, res) => {
 // Verify payment signature
 export const verifyPayment = async (req, res) => {
     try {
+        console.log({ razorpay_order_id, razorpay_payment_id, razorpay_signature });
+
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
         const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
         hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
         const generatedSignature = hmac.digest('hex');
+
+        console.log({ generatedSignature, razorpay_signature }); // Debugging
 
         if (generatedSignature === razorpay_signature) {
             res.status(200).json({ success: true, message: 'Payment verified successfully' });

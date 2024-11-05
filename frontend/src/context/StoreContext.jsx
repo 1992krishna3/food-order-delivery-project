@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { food_list } from "../assets/assets";
+import { food_list } from "../assets/assets"; 
 
 export const StoreContext = createContext(null)
 
@@ -10,6 +10,17 @@ const StoreContextProvider = (props) => {
     const url ="http://localhost:3000" // backend URL
     const [token,setToken] = useState("")
     
+    console.log("Cart Items in StoreContext:", cartItems);
+    console.log("Food List in StoreContext:", food_list);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+        if (token) {
+            setToken(token);
+            loadCartData(token); // Load cart data on component mount
+        }
+    }, []);
 
    
     const addToCart = async (itemId) => {
@@ -99,7 +110,7 @@ console.log('Retrieved Token:', token); // Check if the token is correctly retri
                 const itemInfo = food_list.find((product) => product._id === String(item));
                  // Log to debug which item is causing the issue
             if (!itemInfo) {
-                console.warn(`Item with id ${item} not found in food_list.`);
+                
                 continue; // Skip this iteration if itemInfo is not found
             }
            
@@ -156,9 +167,10 @@ console.log('Retrieved Token:', token); // Check if the token is correctly retri
     };
     return (
         <StoreContext.Provider value={contextValue}>
-            {props.children}
-            
-        </StoreContext.Provider>
+        {props.children}
+        
+    </StoreContext.Provider>
+        
     )
 }   
 

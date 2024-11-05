@@ -7,11 +7,12 @@ import Cart from "./pages/Cart/Cart";
 import PlaceOrder from "./pages/PlaceOrder/PlaceOrder.jsx";
 import Footer from "./components/Footer";
 import LoginPopup from "./components/LoginPopup.jsx";
-
+import PaymentPage from "./pages/Payment/PaymentPage.jsx";
 
 const App = () => {
 
   const [showLogin,setShowLogin] = useState(false)
+  
 
   return(
     <>
@@ -24,6 +25,7 @@ const App = () => {
         <Route path='/' element={<Home/>} />
         <Route path='/cart' element={<Cart/>} />
         <Route path='/order' element={<PlaceOrder/>} />
+        <Route path='/payment' element={<PaymentPage />} />
       </Routes>
       </div>
       <Footer/>
