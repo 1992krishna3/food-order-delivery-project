@@ -1,8 +1,8 @@
 import React from 'react'
-import add_icon from  '../assets/add_icon.png'
-import order_icon from '../assets/order_icon.png'
+import add_icon from  '../../assets/add_icon.png'
+import order_icon from '../../assets/order_icon.png'
 import { NavLink } from 'react-router-dom'
-
+import './Sidebar.css'
 const Sidebar = () => {
   return (
     <div className='sidebar'>

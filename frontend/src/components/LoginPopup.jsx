@@ -71,9 +71,9 @@ const LoginPopup = ({setShowLogin}) => {
       <div className="space-y-2">
         {currState==="Sign up" && (<> <input name='firstName'onChange={onChangeHandler} value={data.firstName} type="text" placeholder='First Name' required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
         <input name='lastName'onChange={onChangeHandler} value={data.lastName} type='text' placeholder='Last Name' required  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/></> )}
-        <input name='confirmPassword' onChange={onChangeHandler} value={data.confirmPassword} type="password" placeholder='confirm Password' required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/> 
         <input name='email' onChange={onChangeHandler} value={data.email} type="email" placeholder='Your email' required className="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
         <input name='password' onChange={onChangeHandler} value={data.password} type="password" placeholder='Password' required className="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        <input name='confirmPassword' onChange={onChangeHandler} value={data.confirmPassword} type="password" placeholder='confirm Password' required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/> 
       </div>
       <button type="submit" className="mt-6 w-full bg-blue-500 text-white py-2  rounded-lg hover:bg-blue-600 transition-colors">
         {currState==="Sign up"?"Create account":"Login"}</button>

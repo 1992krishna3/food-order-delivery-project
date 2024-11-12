@@ -73,8 +73,8 @@ const handleLogout = () => {
         :<div className="relative">
         <div className='navbar-profile   cursor-pointer'>
         <img src={profile_icon} alt="Profile" className="w-8 h-8 rounded-full" />
-        <ul className='nav-profile-dropdown absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md border border-gray-200 z-2 hidden"'>
-         <li><img src={bag_icon} alt="Orders" className="w-5 h-5 mr-2"/><p className="text-gray-800">Orders</p></li> 
+        <ul className='nav-profile-dropdown absolute right-0 mt-2 w-34 bg-white shadow-lg rounded-md border border-gray-2 "'>
+         <li onClick={()=>navigate('/myorders')}><img src={bag_icon} alt="Orders" className="w-5 h-5 mr-2"/><p className=" text-gray-800">Orders</p></li> 
          <hr className="border-gray-200"/>
          <li onClick={logout} className="flex items-center p-2 hover:bg-gray-100 transition cursor-pointer">
           <img src={logout_icon} alt="Logout" className="w-5 h-5 mr-2"/><p className="text-gray-800">Logout</p></li>

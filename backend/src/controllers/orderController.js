@@ -1,71 +1,96 @@
-import Order from "../models/orderModel.js";
-import Razorpay from "razorpay";
+import orderModel from "../models/orderModel.js";
+import userModel from "../models/userModel.js";
+import Stripe from "stripe"
 
-// Create a new order
-export const createOrder = async (req, res) => {
-  try {
-    console.log(req.body)
-      const { paymentInfo,items, amount,address } = req.body;
-      const userId = req.user.id; // Get user ID from the authenticated user
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-      // Check if items are provided
-      if (!items || items.length === 0) {
-          return res.status(400).json({ success: false, message: "No items provided" });
-      }
+//placing user order for frontend
+const placeOrder = async (req,res) =>{
+   
+  const frontend_url = "http://localhost:5173"
 
-      // Create the order
-      const newOrder = new Order({
-          userId,
-          items,
-          amount,
-          address,
-          paymentInfo
-           
-      });
-    
-      await newOrder.save();
-      res.status(201).json({ success: true, message: "Order created successfully", order: newOrder });
-  } catch (error) {
-      console.error('Error creating order:',error);
-      res.status(500).json({ success: false, message: "Server error" });
+  console.log('Received Order Data:', req.body); 
+  const { userId, address, items, amount } = req.body;
+
+  // Basic validation
+  if (!userId || !address || !items || items.length === 0 || !amount) {
+    console.error("Missing required fields:", { userId, address, items, amount });
+    return res.status(400).json({ success: false, message: "Invalid order data" });
   }
-};
 
-//Get all orders
-export const getOrders= async (req, res) => {
-    try {
-       // Ensure the user ID is available from the decoded token
-    const userId = req.user.id;
-    console.log('Fetching orders for User ID:', userId);
-
-        const orders =await Order.find({ userId }).populate('items.food');
-        console.log('Fetched orders:', orders);
-        res.status(200).json(orders);  
-    } catch (err) {
-        console.error('Error fetching orders:', err);
-        res.status(500).json({ msg: 'Server error' });
+  // Validate each item in the 'items' array
+  for (let item of items) {
+    if (!item.name || !item.price || !item.quantity) {
+      return res.status(400).json({ success: false, message: "Invalid item data" });
+    }
+  
+    if (typeof item.price !== 'number' || item.price <= 0) {
+      return res.status(400).json({ success: false, message: `Invalid price for item: ${item.name}. Price must be a positive number.` });
     }
 
-};
-
-//Get an order by ID
-export const getOrderById = async (req, res) => {
-    try {
-        const order = await Order.findById(req.params.id);
-    if (!order) {
-        return res.status(404).json({ msg: 'Order not found' });
+    if (typeof item.quantity !== 'number' || item.quantity <= 0) {
+      return res.status(400).json({ success: false, message: `Invalid quantity for item: ${item.name}. Quantity must be a positive number.` });
     }
-       res.json(order);
-    } catch (err) {
-       console.error(err.message);
-       res.status(500).send('Server error');
-    }
-};
 
-const orderController = {
-    createOrder,
-    getOrders,
-    getOrderById
-};
+  }
 
-export default orderController; 
+  // Ensure amount is a valid number
+  if (isNaN(amount) || amount <= 0) {
+    return res.status(400).json({ success: false, message: "Invalid amount" });
+  }
+
+
+  try{
+     // Create the new order in the database
+    const newOrder = new orderModel({
+      userId,
+      items,
+      amount,
+      address
+    });
+    await newOrder.save();
+    await userModel.findByIdAndUpdate(userId,{cartData:{}});
+
+     // Prepare line items for Stripe payment
+    const line_items = items.map((item)=>({
+      price_data:{
+        currency:"inr",
+        product_data:{
+          name:item.name
+    },
+    unit_amount:item.price*100
+      },
+      quantity:item.quantity
+    }))
+
+    // Add delivery charges
+    line_items.push({
+      price_data:{
+        currency:"inr",
+        product_data:{
+          name:"Delivery Charges"
+        },
+        unit_amount:2*100
+      },
+      quantity:1
+    })
+   
+     // Create a Stripe session
+    const session = await stripe.checkout.sessions.create({
+      line_items,
+      mode:'payment',
+      success_url:`${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
+      cancel_url:`${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
+    })
+
+    res.json({success:true,session_url:session.url})
+
+  }catch(error) {
+     console.log(error);
+     res.json({success:false,message:"Error"})
+  }
+  }
+
+
+
+export default placeOrder;

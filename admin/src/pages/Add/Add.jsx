@@ -1,6 +1,7 @@
-import React, {  useState } from 'react'
-import upload_area from '../assets/upload_area.png'
-import axios from 'axios'
+import React, {  useState } from 'react';
+import axios from 'axios';
+import upload_area from '../../assets/upload_area.png';
+import './Add.css'
 
 const Add = ({url}) => {
     
@@ -11,6 +12,7 @@ const Add = ({url}) => {
         price:"",
         category:"salad"
     })
+    const token = localStorage.getItem('token'); 
 
     const onChangeHandler = (event) => {
         const name = event.target.name;
@@ -20,6 +22,15 @@ const Add = ({url}) => {
 
     const onsubmitHandler = async (event) =>{
         event.preventDefault();
+ 
+ 
+        // Form validation
+ if (!data.name || !data.description || !data.price || !image) {
+    alert("Please fill out all fields and upload an image.");
+    return;
+}
+
+
         const formData = new FormData();
         formData.append("name",data.name)
         formData.append("description",data.description)
@@ -27,21 +38,31 @@ const Add = ({url}) => {
         formData.append("category",data.category)
         formData.append("image",image)
 
-        
-         const response = await axios.post(`${url}/api/v1/foods/add`, formData);
-           if (response.data.success) {
+        try{
+         const response = await axios.post(`${url}/api/v1/foods/add`, formData, {
+           headers: {
+            "Authorization":`Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+        }
+    })
+         if (response.data && response.data.message === "Food item added successfully") {
             setData({
                 name:"",
                 description:"",
                 price:"",
                 category:"salad"
             })
-            setImage(false)
+            setImage(false);
+            console.log("product added successfully");
+            alert("Product added successfully!");
             }
             else{
-                
+                console.error("Failed to add product.");  
             }
-        
+        } catch (error) {
+            console.error("Error submitting form:", error.response ? error.response.data : error.message);
+            alert("Failed to connect to the server. Please ensure the backend is running.");
+        }
     }    
     
   return (
@@ -50,7 +71,9 @@ const Add = ({url}) => {
             <div className="add-img-upload flex-col">
                <p>Upload Image</p>
                <label htmlFor="image" >
-                <img src={image?URL.createObjectURL(image):upload_area} alt=""/>
+               <img src={image?URL.createObjectURL(image):upload_area} alt=""/>
+               
+
                </label>
                <input onChange={(e)=>setImage(e.target.files[0])} type="file" id="image" hidden required/>
             </div>

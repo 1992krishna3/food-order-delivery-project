@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { StoreContext } from '../../context/StoreContext';
 import { useNavigate } from 'react-router-dom';
-
+import { assets } from '../../assets/assets';
 
 const Cart = () => {
 
@@ -16,7 +16,8 @@ const Cart = () => {
     
   console.log("Cart Items:", cartItems);
   console.log("Food List:", food_list);
-  
+ 
+
 
   return (
     <div className='cart p-6 max-w-4xl mx-auto'>
@@ -33,22 +34,24 @@ const Cart = () => {
         <br/>
         <hr/>
         
-        {food_list.map((item)=>{
-          const quantity = cartItems[item._id];
+
+        {food_list.map((food)=>{
+          const quantity = cartItems[food.id];
           if (quantity > 0) {
             return (
               
-              <div key={item._id} className="grid grid-cols-6 items-center gap-4 py-4 border-b border-gray-300">
-                 
-                <img src={`${url}/image/${item.image}`} alt="" className="w-16 h-16 object-cover rounded-lg"></img>
+              <div key={food._id} className="grid grid-cols-6 items-center gap-4 py-4 border-b border-gray-300">
+                
+ 
+                <img src={`${url}/image/${food.image}`} alt={food.name} className="w-16 h-16 object-cover rounded-lg"></img>
               
       
-                <p className="text-gray-800 font-medium">{item.name}</p>
-                <p className="text-gray-800">${item.price}</p>
-                <p className="text-gray-800">{cartItems[item._id]}</p>
-                <p className="text-gray-800">${item.price*cartItems[item._id]}</p>
+                <p className="text-gray-800 font-medium">{food.name}</p>
+                <p className="text-gray-800">${food.price}</p>
+                <p className="text-gray-800">{cartItems[food._id]}</p>
+                <p className="text-gray-800">${food.price*cartItems[food._id]}</p>
                 
-                <p onClick={()=>removeFromCart(item._id)} className="text-red-500 font-bold cursor-pointer hover:text-red-700"> x</p>
+                <p onClick={()=>removeFromCart(food._id)} className="text-red-500 font-bold cursor-pointer hover:text-red-700"> x</p>
               
         
         <hr/>

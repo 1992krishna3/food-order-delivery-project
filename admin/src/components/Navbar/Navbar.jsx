@@ -1,7 +1,7 @@
 import React from 'react'
-import logo from '../assets/logo.png'
-import profile_image from '../assets/profile_image.png'
-
+import logo from '../../assets/logo.png'
+import profile_image from '../../assets/profile_image.png'
+import './Navbar.css'
 const Navbar = () => {
   return (
     <div className='flex justify-between items-center p-4 bg-gray-800'>
