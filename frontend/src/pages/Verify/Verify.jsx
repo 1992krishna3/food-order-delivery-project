@@ -24,8 +24,8 @@ const Verify = () => {
     console.log("Sending to backend:", { success, orderId });
     try {
       const response = await axios.post(`${url}/api/v1/order/verify`, {
-        success,
-        orderId,
+        success:true,
+        orderId:"670a224929c79745ff79262d",
       });
       if (response.data.success) {
         console.log(

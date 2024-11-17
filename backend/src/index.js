@@ -22,8 +22,7 @@ app.use(express.json());
 const allowedOrigins = ["https://incandescent-beijinho-0e58b0.netlify.app", "http://localhost:5174"];
 
 // CORS options
-app.use(
-  cors({
+const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -32,14 +31,15 @@ app.use(
     }
   },
 
-  methods: ["GET", "POST", "PUT", "DELETE","OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-})
-);
+
+};
 
 
-app.options("*", cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 //Define Routes
 app.use("/api/v1/users", userRouter);
