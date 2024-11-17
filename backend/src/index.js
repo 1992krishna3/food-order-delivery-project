@@ -18,17 +18,32 @@ dotenv.config();
 app.use(bodyParser.json());
 app.use(express.json());
 
-const corsOptions = {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: 'Content-Type,Authorization', 
-    credentials: true,
-}
-app.use(cors(corsOptions));
+// Allowed origins
+const allowedOrigins = ["https://incandescent-beijinho-0e58b0.netlify.app", "http://localhost:5174"];
+
+// CORS options
+app.use(
+  cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+
+  methods: ["GET", "POST", "PUT", "DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+})
+);
+
+
+app.options("*", cors());
 
 //Define Routes
 app.use("/api/v1/users", userRouter);
-app.use("/api/order", orderRouter);
+app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/foods", foodRoutes);
 
 app.use("/api/cart", cartRouter);

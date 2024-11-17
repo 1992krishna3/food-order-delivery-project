@@ -1,63 +1,57 @@
-import React, { useEffect, useState } from 'react'
-import axios from "axios"
-import './List.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./List.css";
 
-const List = ({url}) => {
 
-  
-  const [list,setList] = useState([]);
-  
+const List = ({ url }) => {
+  const [list, setList] = useState([]);
+
   const fetchList = async () => {
     const response = await axios.get(`${url}/api/v1/foods/list`);
+    console.log("API Response:", response.data); 
     if (response.data) {
       setList(response.data);
-      console.log("Updated list:", response.data); 
+      console.log("Updated list:", response.data);
+    } else {
     }
-    
-    else {
-      
-    }
-  }
-  const removeFood = async(foodId) => {
-    const response =await axios.delete(`${url}/api/v1/foods/${foodId}`)
+  };
+  const removeFood = async (foodId) => {
+    const response = await axios.delete(`${url}/api/v1/foods/${foodId}`);
     await fetchList();
-  }
-  
-  useEffect(()=>{
+  };
+
+  useEffect(() => {
     fetchList();
-  },[]);
-  
+  }, []);
+
   return (
-    <div  className='list add flex-col'>
-     <p>All Foods List</p> 
-     <div className="list table">
-      <div className='list-table-format title'>
-        <b>Image</b>
-        <b>Name</b>
-        <b>Category</b>
-        <b>Price</b>
-        <b>Action</b>{}
-      </div>
-      
-      {list.map((item,index)=>(
-        
-        <div key={index} className='list-table-format'>
-          
-            <img src={item.image} alt={item.name}/>
+    <div className="list add flex-col">
+      <p>All Foods List</p>
+      <div className="list table">
+        <div className="list-table-format title">
+          <b>Image</b>
+          <b>Name</b>
+          {/* <b>Category</b> */}
+          <b>Price</b>
+          <b>Action</b>
+          {}
+        </div>
+
+        {list.map((item, index) => (
+          <div key={index} className="list-table-format">
+            <img src={`${url}/images/${item.image}`} alt={item.name} />
             
             <p>{item.name}</p>
-            <p>{item.category}</p>
+            {/* <p>{item.category || "N/A"}</p> */}
             <p>${item.price}</p>
-            <p onClick={()=>removeFood(item._id)}className='cursor'>x</p>
+            <p onClick={() => removeFood(item._id)} className="cursor">
+              x
+            </p>
           </div>
-          
-        )
-      )}
+        ))}
       </div>
-     </div>
-    
-    
-  )
-}
+    </div>
+  );
+};
 
-export default List
+export default List;

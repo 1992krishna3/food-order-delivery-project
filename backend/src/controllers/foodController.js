@@ -12,7 +12,7 @@ export const addFood = async (req, res) => {
     //Upload image to Cloudinary
     const result = await cloudinaryInstance.uploader.upload(req.file.path);
     console.log(result, "result");
-    
+
     const imageUrl = result.secure_url;
     const body = req.body;
     console.log(imageUrl);

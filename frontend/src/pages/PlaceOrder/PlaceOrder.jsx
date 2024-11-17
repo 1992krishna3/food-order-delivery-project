@@ -2,10 +2,9 @@ import React, { useContext, useState } from "react";
 import { StoreContext } from "../../context/StoreContext.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
+import { useEffect } from "react";
 
-const PlaceOrder =  () => {
-  
+const PlaceOrder = () => {
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -17,11 +16,10 @@ const PlaceOrder =  () => {
     country: "",
     phone: "",
   });
-  const { getTotalCartAmount, token, food_list, cartItems, url,userId} =
+  const { getTotalCartAmount, token, food_list, cartItems, url, userId } =
     useContext(StoreContext);
 
-    const navigate = useNavigate(); 
-
+  const navigate = useNavigate();
 
   console.log("Cart Items in PlaceOrder:", cartItems);
   console.log("Food List in PlaceOrder:", food_list);
@@ -31,29 +29,27 @@ const PlaceOrder =  () => {
     const value = event.target.value;
     setData((data) => ({ ...data, [name]: value }));
   };
- 
 
   const placeOrder = async (event) => {
     event.preventDefault();
-    
-      let orderItems = [];
-      food_list.forEach((item) => {
-        if (cartItems[item._id] > 0) {
-          orderItems.push({
-            name: item.name,      // Add name of the item
-            price: item.price,    // Add price of the item
-            quantity: cartItems[item._id],
-          });
-          }
-      });
-      
- 
 
-      console.log(getTotalCartAmount());
+    let orderItems = [];
+    food_list.forEach((item) => {
+      if (cartItems[item._id] > 0) {
+        orderItems.push({
+          name: item.name, // Add name of the item
+          price: item.price, // Add price of the item
+
+          quantity: cartItems[item._id],
+        });
+      }
+    });
+
+    console.log(getTotalCartAmount());
 
     const orderData = {
-      userId:userId,
-      address:{
+      userId: "670a224929c79745ff79262d",
+      address: {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -63,50 +59,62 @@ const PlaceOrder =  () => {
         pincode: data.pincode,
         country: data.country,
         phone: data.phone,
-    },
-    
-      items: orderItems,
-        
-     
-      amount:getTotalCartAmount()+2 
-    
-      };
-      console.log("Order Data:", orderData);
-      console.log("Order User ID:", orderData.userId);
-      console.log("Order Address:", orderData.address);
-      console.log("Order Items:", orderData.items);
-      console.log("Order Amount:", orderData.amount);
-    
-  
-    try{
-        console.log("Base URL:", url);
-        console.log("Token:", token);
+      },
 
-     const response = await axios.post(`${url}/api/order/place`,orderData,{
-      headers:{
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-           
-      }
-    });
+      items: orderItems,
+
+      amount: getTotalCartAmount() + 2,
+    };
+    console.log("Order Data:", orderData);
+    console.log("Order User ID:", orderData.userId);
+    console.log("Order Address:", orderData.address);
+    console.log("Order Items:", orderData.items);
+    console.log("Order Amount:", orderData.amount);
+
+    try {
+      console.log("Base URL:", url);
+      console.log("Token:", token);
+
+      const response = await axios.post(
+        `${url}/api/v1/order/place`,
+        orderData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.data.success) {
-        const {session_url} = response.data;
-        console.log("Redirecting to Stripe session URL:", session_url); 
-       window.location.replace(session_url);
-      }
-      else{
+        const { session_url } = response.data;
+        console.log("Redirecting to Stripe session URL:", session_url);
+        window.location.replace(session_url);
+      } else {
         console.error("Order placement failed:", response.data);
-        alert(response.data.message || "Error placing order")
-        
+        alert(response.data.message || "Error placing order");
       }
       console.log(response);
-    }catch(error) {
-      console.error("Error placing order:", error.response ? error.response.data : error.message);
-      alert(error.response?.data?.message || "There was an error placing your order.");
+    } catch (error) {
+      console.error(
+        "Error placing order:",
+        error.response ? error.response.data : error.message
+      );
+      alert(
+        error.response?.data?.message ||
+          "There was an error placing your order."
+      );
     }
-};
+  };
 
-    return (
+  useEffect(() => {
+    if (!token) {
+      navigate("/cart");
+    } else if (getTotalCartAmount() === 0) {
+      navigate("/cart");
+    }
+  }, [token]);
+
+  return (
     <div>
       <form
         onSubmit={placeOrder}
@@ -223,15 +231,12 @@ const PlaceOrder =  () => {
         </div>
         <button
           type="submit"
-          
           className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-200"
         >
           PROCEED TO PAYMENT
         </button>
       </form>
-     
     </div>
   );
-
 };
 export default PlaceOrder;

@@ -1,27 +1,102 @@
-.list-table-format{
-    display:grid;
-    grid-template-columns: 0.5fr 2fr 1fr 1fr 0.5fr;
-    align-items:center;
-    gap:10px;
-    padding: 12px 15px;
-    border:1px solid #cacaca;
-    font-size:13px;
-}
-.list-table-format.title{
-    background-color:#f9f9f9 ;
-}
-.list-table-format img{
-    width:50px;
-}
-@media (max-width:600px) {
-    .list-table-format{
-        grid-template-columns:1fr 3fr 1fr;
-        gap:15px;
-    }
-    .list-table-format.title{
-        display:none;
-    }
-}
-.cursor{
+.list {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .list p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  .list.table {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .list-table-format {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 2fr 1fr 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .list-table-format.title {
+    font-weight: 700;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+  }
+  
+  .list-table-format img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .list-table-format p {
+    font-size: 1rem;
+    color: #555;
+    margin: 0;
+    text-align: left;
+  }
+  
+  .list-table-format b {
+    font-size: 1rem;
+    color: #222;
+  }
+  
+  .cursor {
+    font-size: 1.2rem;
+    color: #ff4d4d;
+    font-weight: 700;
     cursor: pointer;
-}
+    text-align: center;
+  }
+  
+  .cursor:hover {
+    color: #ff1a1a;
+    transform: scale(1.1);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .list {
+      padding: 1rem;
+    }
+  
+    .list-table-format {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 0.5rem;
+      padding: 0.5rem;
+    }
+  
+    .list-table-format img {
+      width: 60px;
+      height: 60px;
+    }
+  
+    .list-table-format p,
+    .list-table-format b {
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  
+    .cursor {
+      font-size: 1rem;
+    }
+    
+      
+  }
+  

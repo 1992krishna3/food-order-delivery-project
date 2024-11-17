@@ -6,7 +6,7 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-  const url = "http://localhost:3000"; // backend URL
+  const url = "https://food-order-backend-5.onrender.com"; // backend URL
   const [token, setToken] = useState("");
 
   console.log("Cart Items in StoreContext:", cartItems);
@@ -22,19 +22,14 @@ const StoreContextProvider = (props) => {
 
   const addToCart = async (foodId) => {
     try {
-      // Update the cart state with the new quantity
-      setCartItems((prev) => {
-        
-          const newQuantity = prev[foodId] ? prev[foodId] + 1 : 1;
-          return { ...prev, [foodId]: newQuantity };
-        });
-      
+      const newQuantity = cartItems[foodId] ? cartItems[foodId] + 1 : 1;
+      setCartItems((prev) => ({ ...prev, [foodId]: newQuantity }));
 
-// Define the data payload for the request
-const data = {
-  foodId,
-  quantity: cartItems[foodId] ? cartItems[foodId] + 1 : 1,
-};
+      // Define the data payload for the request
+      const data = {
+        foodId,
+        quantity: cartItems[foodId] ? cartItems[foodId] + 1 : 1,
+      };
 
       // Send the request to the backend to add to cart
       const response = await axios.post(`${url}/api/cart/add`, data, {
