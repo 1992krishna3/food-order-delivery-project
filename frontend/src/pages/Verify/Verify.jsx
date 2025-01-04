@@ -5,7 +5,7 @@ import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 
 const Verify = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const success = searchParams.get("success");
   const orderId = searchParams.get("orderId");
   const { url } = useContext(StoreContext);
@@ -20,18 +20,22 @@ const Verify = () => {
       navigate("/");
       return;
     }
-
-    console.log("Sending to backend:", { success, orderId });
+    
+   
+    
     try {
-      const response = await axios.post(`${url}/api/v1/order/verify`, {
-        success:true,
-        orderId:"670a224929c79745ff79262d",
+      
+      const response = await axios.get(`${url}/api/v1/order/verify`, {
+        params:{success,orderId},
       });
+      console.log("API Response:", response.data);
+      
       if (response.data.success) {
         console.log(
-          "Payment verified and order recorded:",
-          response.data.order
+          "Payment verified successfully. Redirecting to 'myorders' page...",
+          response.data.message
         );
+        
         navigate("/myorders");
       } else {
         console.error("Verification failed:", response.data.message);
@@ -46,14 +50,43 @@ const Verify = () => {
     }
   };
   useEffect(() => {
+  
     verifyPayment();
-  }, [success, orderId]);
+  }, [success, orderId, url, navigate]);
 
   return (
     <div className="verify">
       <div className="spinner"></div>
+      
+      <p>Verifying payment...</p>
     </div>
   );
 };
 
 export default Verify;
+// import { useEffect } from "react";
+// import { useNavigate, useSearchParams } from "react-router-dom";
+
+// const VerifyPayment = () => {
+//   const [searchParams] = useSearchParams();
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const success = searchParams.get("success") === "true";
+//     const orderId = searchParams.get("orderId");
+
+//     if (success) {
+//       // Optionally, you can verify the payment with your backend
+//       // After verification, navigate to the My Orders page
+//       navigate("/myorders", { state: { orderId } });
+//     } else {
+//       // Handle payment failure
+//       alert("Payment failed. Please try again.");
+//       navigate("/");
+//     }
+//   }, [searchParams, navigate]);
+
+//   return null; // Or display a loading spinner while processing
+// };
+
+// export default VerifyPayment;

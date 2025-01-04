@@ -3,10 +3,11 @@ import userModel from "../models/userModel.js";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const frontend_url=process.env.FRONTEND_URL
 
 //placing user order for frontend
 export const placeOrder = async (req, res) => {
-  const frontend_url = "https://food-order-backend-5.onrender.com";
+  
 
   console.log("Received Order Data:", req.body);
   const { userId, address, items, amount } = req.body;
@@ -80,19 +81,33 @@ export const placeOrder = async (req, res) => {
     }));
 
     // Add delivery charges
+    const deliveryCharge = 2; 
     line_items.push({
       price_data: {
         currency: "inr",
         product_data: {
           name: "Delivery Charges",
         },
-        unit_amount: 2 * 100,
+        unit_amount: Math.round(deliveryCharge * 100),
       },
       quantity: 1,
     });
 
+    // Calculate the total amount
+    const totalAmountInINR = amount + deliveryCharge;
+    if (totalAmountInINR < 43) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message:
+            "The total amount must be at least ₹43 to meet the minimum payment requirement.",
+        });
+    }
+
     // Create a Stripe session
     const session = await stripe.checkout.sessions.create({
+
       line_items,
       mode: "payment",
       success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
@@ -101,8 +116,8 @@ export const placeOrder = async (req, res) => {
 
     res.json({ success: true, session_url: session.url });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error" });
+    console.error("Error placing order:", error.message, error.stack);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 //To verify order
@@ -111,16 +126,20 @@ export const verifyOrder = async (req, res) => {
   console.log("Verifying Order:", { orderId, success });
 
   try {
-    if (success === true || success === "true") {
+    if (!orderId) {
+      return res.status(400).json({ success: false, message: "Order ID is required." });
+    }
+
+    if (success === "true" || success === true) {
       await orderModel.findByIdAndUpdate(orderId, { payment: true });
-      res.json({ success: true, message: "Paid" });
+      return res.status(200).json({ success: true, message: "Paid" });
     } else {
       await orderModel.findByIdAndDelete(orderId);
-      res.json({ success: false, message: "Not Paid" });
+      return res.status(200).json({ success: false, message: "Not Paid" });
     }
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error" });
+    return res.status(500).json({ success: false, message: "Error" });
   }
 };
 

@@ -36,12 +36,14 @@ const LoginPopup = ({ setShowLogin }) => {
       const response = await axios.post(newUrl, data, {
         headers: {
           "Content-Type": "application/json",
+          
         },
         withCredentials: true,
       });
-
+     
       if (response.status === 201 || response.status === 200) {
         const token = response.data.token;
+        console.log("Token received:", token); 
         setToken(token);
         localStorage.setItem("token", token);
         setShowLogin(false);
