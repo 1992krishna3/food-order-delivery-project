@@ -1,6 +1,102 @@
 import User from "../models/userModel.js";
 import Order from "../models/orderModel.js";
 import Food from "../models/foodModel.js";
+import Admin from '../models/adminModel.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+// Admin Signup function
+export const adminSignup = async (req, res) => {
+  try {
+    const { firstName, lastName, email, password, confirmPassword } = req.body;
+
+    if (!email || !password || !confirmPassword || !firstName || !lastName) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Check if passwords match
+    if (password.trim() !== confirmPassword.trim()) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Check if the user already exists
+    const userExist = await User.findOne({ email });
+    if (userExist) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Create new admin user
+    const newAdmin = new User({
+      email,
+      firstName,
+      lastName,
+      password: hashedPassword,
+      role: "admin", // Ensure the role is set to "admin"
+    });
+
+    const newAdminCreated = await newAdmin.save();
+    if (!newAdminCreated) {
+      return res.status(400).json({ message: "Admin not created" });
+    }
+
+    // Generate token
+    const token = generateToken(newAdmin._id, newAdmin.role);
+
+    // Store token in a cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+    });
+
+    res.status(201).json({ message: "Admin signed up successfully!", token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+// Admin Signin function
+export const adminSignin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    // Check if user is an admin
+    if (user.role !== "admin") {
+      return res.status(400).json({ message: "Not authorized as admin" });
+    }
+
+    const matchPassword = await bcrypt.compare(password, user.password);
+    if (!matchPassword) {
+      return res.status(400).json({ message: "Password is incorrect" });
+    }
+
+    // Generate JWT token
+    const token = generateToken(user._id, user.role);
+
+    // Store token in a cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+    });
+
+    res.status(200).json({ message: "Admin signed in successfully", token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 
 // Fetch all users
 export const getAllUsers = async (req, res) => {
@@ -89,6 +185,8 @@ export const deleteFoodItem = async (req, res) => {
 };
 
 const adminController = {
+  adminSignup,
+  adminSignin,
   getAllUsers,
   deleteUser,
   getAllOrders,

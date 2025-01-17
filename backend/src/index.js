@@ -14,19 +14,15 @@ const app = express();
 
 dotenv.config();
 
-
-
 //Middleware to parse json bodies
 app.use(bodyParser.json());
 app.use(express.json());
 
-
-
 app.use(cors({
   origin: [
     "https://capstone-foodorderdelivery-project.netlify.app",
-    "http://localhost:5173"
-    // "http://localhost:5174",
+    "http://localhost:5173",
+    "http://localhost:5174"
     
   ],
   credentials:true,
@@ -34,15 +30,13 @@ app.use(cors({
   
 })); 
 
-
-
 //Define Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/foods", foodRoutes);
 
 app.use("/api/cart", cartRouter);
-app.use("/api/admin", adminRouter);
+app.use("/api/v1/admin", adminRouter);
 
 
 // Sample route

@@ -6,6 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import Order from "./pages/order/order.jsx";
 import Add from "./pages/Add/Add.jsx";
 import List from "./pages/list/list.jsx";
+import AdminAuth from "./components/Navbar/AdminAuth.jsx";
 
 const App = () => {
   const url = "https://food-order-backend-5.onrender.com";
@@ -17,6 +18,11 @@ const App = () => {
       <div className="flex flex-1">
         <Sidebar />
         <Routes>
+        <Route path="/adminauth" element={<AdminAuth />} />
+        <Route path="/admin/dashboard" element={<div>Admin Dashboard</div>} />
+        <Route path="/adminsignin" element={<div>Admin Signin</div>} />
+        <Route path="/adminsignup" element={<AdminAuth />} />
+
           <Route path="/add" element={<Add url={url} />} />
           <Route path="/list" element={<List url={url} />} />
           <Route path="/orders" element={<Order url={url} />} />
